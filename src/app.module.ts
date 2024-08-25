@@ -22,14 +22,14 @@ import { RedisOptions } from './config/redisStore.config';
     //     // port: 587,
     //     // secure: false, // true for 465, false for other ports
     //     // auth: {
-    //     //   user: 'sndp07.sb@gmail.com',
-    //     //   pass: 'fyizavwoxynpqftr', // Replace with app password
+    //     //   user: <email>,
+    //     //   pass: <app password>,
     //     // },
     //     host: 'sandbox.smtp.mailtrap.io',
     //     port: 2525,
     //     auth: {
-    //       user: 'ad180b50a69e19',
-    //       pass: '6fc9d15e41ecf2',
+    //       user: <user>,
+    //       pass: <password>,
     //     },
     //   },
     // }),
