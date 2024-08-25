@@ -28,7 +28,7 @@ export class ApiResponseInterceptor<T>
   ): Observable<ApiResponse<T>> | Promise<Observable<ApiResponse<T>>> {
     const statusCode = context.switchToHttp().getResponse().statusCode;
     // console.log('context: ', context.getArgs());
-    console.log({ context }, context.switchToHttp().getResponse());
+    // console.log({ context }, context.switchToHttp().getResponse());
     let msg = '';
 
     switch (statusCode) {
@@ -57,7 +57,7 @@ export class ApiResponseInterceptor<T>
         return {
           data: data.data || null,
           message: data.message || msg,
-          statusCode,
+          statusCode: data.statusCode || statusCode,
         };
       }),
     );

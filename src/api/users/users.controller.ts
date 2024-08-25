@@ -6,14 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { createUserSchema } from './users.validation';
-import JoiValidationPipe from 'src/common/validation/joi.validation.pipe';
-import { DATA_FETCH_SUCCESS } from 'src/common/constants/http-response';
+import JoiValidationPipe from '@/common/validation/joi.validation.pipe';
+import { DATA_FETCH_SUCCESS } from '@/common/constants/http-response';
+// import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
+// @UseInterceptors(CacheInterceptor) // caching whole service (only get functions)
 @Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -27,29 +30,29 @@ export class UsersController {
       const user = await this.usersService.create(createUserDto);
       return { data: user, message: 'Data stored successfully' };
     } catch (error) {
-      console.log(error);
-      return { data: null, message: error.message };
+      throw error;
     }
   }
 
   @Get('')
+  // @CacheKey('user_find_all') // need to enable global cache interceptor for this to work.
+  // @CacheTTL(6000) // in miliseconds
   async findAll() {
     try {
       const user = await this.usersService.findAll();
       return { data: user, message: 'Data list fetch success' };
     } catch (error) {
-      return { data: null, message: error.message };
+      throw error;
     }
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @Query('minimal') minimal?: string) {
     try {
-      const user = await this.usersService.findOne(+id);
+      const user = await this.usersService.findOne(+id, minimal);
       return { data: user, message: DATA_FETCH_SUCCESS };
     } catch (error) {
-      console.log({ error });
-      return { data: null, message: error.message };
+      throw error;
     }
   }
 
@@ -63,8 +66,7 @@ export class UsersController {
       const user = await this.usersService.update(+id, updateUserDto);
       return { data: user, message: 'Data updated Successfully' };
     } catch (error) {
-      console.log({ error });
-      return { data: null, message: error.message };
+      throw error;
     }
   }
 
@@ -74,7 +76,7 @@ export class UsersController {
       const user = this.usersService.remove(+id);
       return { data: user, message: 'Data deleted successfully' };
     } catch (error) {
-      return { data: null, message: error.message };
+      throw error;
     }
   }
 }

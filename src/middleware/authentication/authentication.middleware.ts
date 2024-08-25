@@ -26,9 +26,13 @@ export class AuthenticationMiddleware implements NestMiddleware {
       req.user = decoded;
       next();
     } catch (error) {
-      return res.status(error?.status || 500).json({
+      let statusCode = 500;
+      if (error.message === 'jwt expired') {
+        statusCode = 401;
+      }
+      return res.status(error?.status || statusCode).json({
         message: error?.message || 'Something went wrong',
-        statusCode: error?.status || 500,
+        statusCode: error?.status || statusCode,
       });
     }
   }
